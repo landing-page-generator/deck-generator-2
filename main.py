@@ -21,7 +21,7 @@ async def read_index():
     return HTMLResponse('Hello, world!')
 
 
-@app.post('/api/process')
+@app.post('/api/generate-decks', response_class=JSONResponse)
 async def process_data(request: Request, data: dict):
     supabase_url: str = os.environ.get("SUPABASE_URL")
     supabase_key: str = os.environ.get("SUPABASE_KEY")
