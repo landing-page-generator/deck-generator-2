@@ -1,0 +1,2 @@
+Given the following information, generate information for the slide deck about the company for this persona and lead.
+Output in JSON format. Do not use Markdown or any other format.
