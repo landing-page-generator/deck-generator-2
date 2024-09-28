@@ -1,2 +1,108 @@
 Given the following information, generate information for the slide deck about the company for this persona and lead.
 Output in plain JSON format. Do not use Markdown or any other format.
+
+You SHOULD follow the following template:
+
+{
+    "logoURL": "https://via.placeholder.com/150",
+    "list": [
+        {
+            "type": "HERO",
+            "title": "Hero",
+            "subtitle": "Subtitle",
+            "imageURL": "https://via.placeholder.com/150"
+        },
+        {
+            "type": "FEATURES",
+            "title": "Features",
+            "features": [
+                {
+                    "title": "Feature 1",
+                    "emoji": "🔥",
+                    "description": "Description"
+                },
+                {
+                    "title": "Feature 1",
+                    "emoji": "🔥",
+                    "description": "Description"
+                },
+                {
+                    "title": "Feature 1",
+                    "emoji": "🔥",
+                    "description": "Description"
+                }
+            ]
+        },
+        {
+            "type": "BENEFITS",
+            "features": [
+                {
+                    "name": "Feature 1",
+                    "emoji": "🔥",
+                    "description": "Description"
+                },
+                {
+                    "name": "Feature 2",
+                    "emoji": "🔥",
+                    "description": "Description"
+                },
+                {
+                    "name": "Feature 3",
+                    "emoji": "🔥",
+                    "description": "Description"
+                },
+                {
+                    "name": "Feature 4",
+                    "emoji": "🔥",
+                    "description": "Description"
+                }
+            ]
+        },
+        {
+            "type": "EXPLANATION",
+            "steps": [
+                {
+                    "title": "Step 1",
+                    "description": "Description",
+                    "emoji": "🔥"
+                },
+                {
+                    "title": "Step 2",
+                    "description": "Description",
+                    "emoji": "🔥"
+                },
+                {
+                    "title": "Step 3",
+                    "description": "Description",
+                    "emoji": "🔥"
+                }
+            ]
+        },
+        {
+            "type": "TESTIMONIALS",
+            "testimonials": [
+                {
+                    "firstName": "First Name",
+                    "lastName": "Last Name",
+                    "testimonial": "Description"
+                },
+                {
+                    "firstName": "First Name",
+                    "lastName": "Last Name",
+                    "testimonial": "Description"
+                },
+                {
+                    "firstName": "First Name",
+                    "lastName": "Last Name",
+                    "testimonial": "Description"
+                }
+            ]
+        },
+        {
+            "type": "CTA",
+            "headline": "Headline",
+            "description": "Description",
+            "link": "https://example.com"
+        }
+    ]
+}
