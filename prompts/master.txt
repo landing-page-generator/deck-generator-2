@@ -1,109 +1,163 @@
-Given the following information, generate information for the slide deck about the company for this persona and lead.
+Using the provided company information, target market hypotheses, and lead prospect information, generate content to fill the following JSON schema for a personalized sales deck uniquely tailored to the lead prospect.
 Output in plain JSON format. Do not use Markdown or any other format.
 
-You SHOULD follow the following template:
+**Company Information:**
+[Insert your company information JSON here]
 
+**Target Market Hypotheses:**
+[Insert your target market hypotheses JSON here]
+
+**Lead Prospect Information:**
+[Insert the lead prospect's information JSON here]
+
+**Please ensure that all fields in the JSON schema are filled with appropriate and personalized content based on the provided information. The content should aim to engage the lead prospect by addressing their specific needs, interests, and challenges, and by showcasing how our company can provide valuable solutions.**
+
+**JSON Schema to Populate:**
 {
-    "logoURL": "https://via.placeholder.com/150",
-    "color": "pink",
-    "list": [
+  "logoURL": "[Your Company Logo URL]",
+  "color": "",
+  "list": [
+    {
+      "type": "HERO",
+      "title": "",
+      "subtitle": "",
+      "imageURL": ""
+    },
+    {
+      "type": "FEATURES",
+      "title": "",
+      "features": [
         {
-            "type": "HERO",
-            "title": "Hero",
-            "subtitle": "Subtitle",
-            "imageURL": "https://via.placeholder.com/150"
+          "title": "",
+          "emoji": "",
+          "description": ""
         },
         {
-            "type": "FEATURES",
-            "title": "Features",
-            "features": [
-                {
-                    "title": "Feature 1",
-                    "emoji": "🔥",
-                    "description": "Description"
-                },
-                {
-                    "title": "Feature 1",
-                    "emoji": "🔥",
-                    "description": "Description"
-                },
-                {
-                    "title": "Feature 1",
-                    "emoji": "🔥",
-                    "description": "Description"
-                }
-            ]
+          "title": "",
+          "emoji": "",
+          "description": ""
         },
         {
-            "type": "BENEFITS",
-            "features": [
-                {
-                    "name": "Feature 1",
-                    "emoji": "🔥",
-                    "description": "Description"
-                },
-                {
-                    "name": "Feature 2",
-                    "emoji": "🔥",
-                    "description": "Description"
-                },
-                {
-                    "name": "Feature 3",
-                    "emoji": "🔥",
-                    "description": "Description"
-                },
-                {
-                    "name": "Feature 4",
-                    "emoji": "🔥",
-                    "description": "Description"
-                }
-            ]
-        },
-        {
-            "type": "EXPLANATION",
-            "steps": [
-                {
-                    "title": "Step 1",
-                    "description": "Description",
-                    "emoji": "🔥"
-                },
-                {
-                    "title": "Step 2",
-                    "description": "Description",
-                    "emoji": "🔥"
-                },
-                {
-                    "title": "Step 3",
-                    "description": "Description",
-                    "emoji": "🔥"
-                }
-            ]
-        },
-        {
-            "type": "TESTIMONIALS",
-            "testimonials": [
-                {
-                    "firstName": "First Name",
-                    "lastName": "Last Name",
-                    "testimonial": "Description"
-                },
-                {
-                    "firstName": "First Name",
-                    "lastName": "Last Name",
-                    "testimonial": "Description"
-                },
-                {
-                    "firstName": "First Name",
-                    "lastName": "Last Name",
-                    "testimonial": "Description"
-                }
-            ]
-        },
-        {
-            "type": "CTA",
-            "headline": "Headline",
-            "description": "Description",
-            "link": "https://example.com"
+          "title": "",
+          "emoji": "",
+          "description": ""
         }
-    ]
+      ]
+    },
+    {
+      "type": "BENEFITS",
+      "features": [
+        {
+          "name": "",
+          "emoji": "",
+          "description": ""
+        },
+        {
+          "name": "",
+          "emoji": "",
+          "description": ""
+        },
+        {
+          "name": "",
+          "emoji": "",
+          "description": ""
+        },
+        {
+          "name": "",
+          "emoji": "",
+          "description": ""
+        }
+      ]
+    },
+    {
+      "type": "EXPLANATION",
+      "steps": [
+        {
+          "title": "",
+          "description": "",
+          "emoji": ""
+        },
+        {
+          "title": "",
+          "description": "",
+          "emoji": ""
+        },
+        {
+          "title": "",
+          "description": "",
+          "emoji": ""
+        }
+      ]
+    },
+    {
+      "type": "TESTIMONIALS",
+      "testimonials": [
+        {
+          "firstName": "",
+          "lastName": "",
+          "testimonial": ""
+        },
+        {
+          "firstName": "",
+          "lastName": "",
+          "testimonial": ""
+        },
+        {
+          "firstName": "",
+          "lastName": "",
+          "testimonial": ""
+        }
+      ]
+    },
+    {
+      "type": "CTA",
+      "headline": "",
+      "description": "",
+      "link": "[Call-to-Action Link]"
+    }
+  ]
 }
+Instructions:
+
+Insert the Relevant Information:
+
+Replace [Insert your company information JSON here] with your company's information in JSON format.
+Replace [Insert your target market hypotheses JSON here] with your target market hypotheses in JSON format.
+Replace [Insert the lead prospect's information JSON here] with the lead prospect's information in JSON format.
+Replace [Your Company Logo URL] with the URL of your company's logo.
+Replace [Call-to-Action Link] with the URL you want the lead prospect to visit (e.g., your contact page or a scheduling link).
+Populate the JSON Schema:
+
+Fill in each field in the JSON schema with content that is personalized to the lead prospect, using the provided information.
+Ensure that the content is relevant and tailored to address the lead prospect's specific needs, interests, challenges, and pain points.
+Content Guidelines:
+
+HERO Section:
+
+Title: Craft a compelling headline that immediately captures the lead prospect's attention.
+Subtitle: Write a brief description that relates to the lead prospect's role, industry, or specific challenges.
+ImageURL: Provide a relevant image URL (can be a placeholder or a link to an image that resonates with the prospect's industry).
+FEATURES Section:
+
+Title: Introduce the key features of your products or services that are most relevant to the lead prospect.
+Features: List features that align with the lead prospect's needs and challenges, using emojis to enhance visual appeal.
+BENEFITS Section:
+
+Highlight the benefits that the lead prospect or their company would gain from your offerings.
+EXPLANATION Section:
+
+Outline the steps or processes involved in implementing your solutions, emphasizing ease of adoption and support.
+TESTIMONIALS Section:
+
+Provide testimonials from clients or partners in similar industries or who had similar challenges.
+CTA Section:
+
+Include a strong call-to-action encouraging the lead prospect to take the next step (e.g., schedule a meeting, request a demo).
+Ensure Personalization:
+
+Use the lead prospect's achievements, interests, and pain points to make the content resonate with them.
+Address how your company can help solve their specific challenges or achieve their goals.
+Review and Edit:
+
+Check for consistency, accuracy, and alignment with your company's branding and messaging.
+Ensure that all content is professional, respectful, and tailored to build a positive relationship with the lead prospect.
