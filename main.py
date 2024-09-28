@@ -70,7 +70,7 @@ async def admin_page():
     deck_uuids = [deck['uuid'] for deck in decks.data]
     deck_uuids_html = ''.join(f'<li><a href="https://.../{deck_uuid}">{deck_uuid}</a></li>' for deck_uuid in deck_uuids)
     return HTMLResponse(
-        "<html><body><h1>Admin Page</h1><h2>Decks UUIDs:</h2><ul>{deck_uuids_html}</ul></body></html>"
+        f"<html><body><h1>Admin Page</h1><h2>Decks UUIDs:</h2><ul>{deck_uuids_html}</ul></body></html>"
     )
 
 
@@ -88,6 +88,7 @@ def generate_deck(input: dict):
 
     supabase.table('decks').insert({
         "data": deck_content,
+        "input": input,
         "uuid": deck_uuid
     }).execute()
 
