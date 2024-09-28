@@ -54,7 +54,10 @@ async def read_index():
 async def generate_deck_form(request: Request):
     form_data = await request.form()
     data = form_data.get('data')
-    data = json.loads(data)
+    try:
+        data = json.loads(data)
+    except:
+        data = data
     deck_uuid, deck_content = generate_deck(data)
     deck_content_html = json.dumps(deck_content, indent=4)
     return HTMLResponse(
