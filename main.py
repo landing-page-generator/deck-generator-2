@@ -61,7 +61,12 @@ async def generate_deck_form(request: Request):
     data = form_data.get('data')
     data = json.loads(data)
     deck_uuid, deck_content = generate_deck(data)
-    return HTMLResponse(f"Deck generated successfully!<br><br>UUID: {deck_uuid}<br><br>DATA:<br>{deck_content}")
+    deck_content_html = json.dumps(deck_content, indent=4)
+    return HTMLResponse(
+        "Deck generated successfully!<br><br>"
+        f"UUID: <b>{deck_uuid}</b><br><br>"
+        f"DECK:<br><pre>{deck_content_html}</pre>"
+    )
 
 
 def generate_deck(input: dict):
