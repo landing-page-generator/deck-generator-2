@@ -114,6 +114,7 @@ Output in plain JSON format. Do not use Markdown or any other format.
       "headline": "",
       "description": "",
       "link": "[Call-to-Action Link]"
+      "homepageLink": "[Homepage Link]",
     }
   ]
 }
@@ -126,6 +127,7 @@ Replace [Insert your target market hypotheses JSON here] with your target market
 Replace [Insert the lead prospect's information JSON here] with the lead prospect's information in JSON format.
 Replace [Your Company Logo URL] with the URL of your company's logo.
 Replace [Call-to-Action Link] with the URL you want the lead prospect to visit (e.g., your contact page or a scheduling link).
+Replace [Homepage Link] with the URL of your homepage.
 Populate the JSON Schema:
 
 Fill in each field in the JSON schema with content that is personalized to the lead prospect, using the provided information.
