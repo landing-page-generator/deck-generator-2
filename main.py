@@ -79,7 +79,7 @@ async def api_generate_deck(request: Request, input: InputData):
         "data": input.dict(),
     }).execute()
     deck_uuid, deck_content = generate_deck(input.dict())
-    return JSONResponse(content={"uuid": deck_uuid, "message": "Data received and is being processed... <3"})
+    return JSONResponse(content={"uuid": deck_uuid, "status": "success", "debug_data": deck_content})
 
 if __name__ == '__main__':
     uvicorn.run('main:app', host='0.0.0.0', port=8000, reload=True)
