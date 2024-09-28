@@ -96,11 +96,13 @@ Output in plain JSON format. Do not use Markdown or any other format.
         {
           "firstName": "",
           "lastName": "",
+          "gender": "",
           "testimonial": ""
         },
         {
           "firstName": "",
           "lastName": "",
+          "gender": "",
           "testimonial": ""
         }
       ]
