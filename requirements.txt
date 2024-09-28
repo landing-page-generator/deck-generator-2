@@ -10,3 +10,4 @@ uvicorn
 supabase
 pydantic[email]
 python-multipart
+ai21

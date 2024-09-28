@@ -12,7 +12,7 @@ from supabase import create_client, Client
 from pathlib import Path
 from dotenv import load_dotenv
 
-from gemini import gemini
+from ai import gemini, ai21
 
 app = FastAPI()
 
@@ -62,10 +62,8 @@ async def generate_deck_form(request: Request):
 
 
 def generate_deck(input: dict):
-    # TODO: Implement this
     prompt = Path('prompts/master.txt').read_text() + f'\n{input}\n'
-    response = gemini(prompt)
-    print(response)
+    response = ai21(prompt)
     deck_content = json.loads(response)
     deck_uuid = str(uuid.uuid4())
     supabase.table('decks').insert({

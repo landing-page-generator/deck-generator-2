@@ -4,6 +4,9 @@ import requests
 from pathlib import Path
 from dotenv import load_dotenv
 
+from ai21 import AI21Client
+from ai21.models.chat import ChatMessage
+
 _ = load_dotenv(Path(__file__).parent / '.env')
 
 
@@ -34,3 +37,22 @@ def gemini(prompt):
     except requests.exceptions.RequestException as e:
         print("An error occurred:", e)
         return None
+
+
+def ai21(prompt):
+    api_key = os.environ['AI21_API_KEY']
+    model = os.environ.get('AI21_MODEL', 'jamba-1.5-mini')
+    ai21_client = AI21Client(api_key)
+
+    # system = "You're a sales manager in a SaaS company"
+    messages = [
+        # ChatMessage(content=system, role="system"),
+        ChatMessage(content=prompt, role="user"),
+    ]
+
+    chat_completions = ai21_client.chat.completions.create(
+        messages=messages,
+        model=model,
+    )
+
+    return chat_completions.choices[0].message.content
