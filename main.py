@@ -30,18 +30,18 @@ supabase: Client = create_client(supabase_url, supabase_key)
 async def read_index():
     # return HTMLResponse("Hello, world!")
     placeholder = """
-    {
-        "lead": { "name": "John Smith", "email": "john.smith@gmail.com"},
-        "persona": { "name": "Firefighter" },
-        "company": { "name": "Sundai" }
-    }"""
+{
+    "lead": { "name": "John Smith", "email": "john.smith@gmail.com"},
+    "persona": { "name": "Firefighter" },
+    "company": { "name": "Sundai" }
+}"""
 
     return HTMLResponse(f"""
     <html>
     <body>
     <h1>Deck Generation Form</h1>
     <form action="/generate-deck" method="post">
-        <label for="lead">Data:</label><br>
+        <label for="lead">Data: (you can put here whatever you want in any format)</label><br>
         <textarea id="data" name="data" rows="10" cols="100">{placeholder}</textarea><br>
         <input type="submit" value="Generate Deck">
     </form>
@@ -59,7 +59,9 @@ async def generate_deck_form(request: Request):
     deck_content_html = json.dumps(deck_content, indent=4)
     return HTMLResponse(
         "Deck generated successfully!<br><br>"
-        f"UUID: <a href='https://sales-six-theta.vercel.app/{deck_uuid}'><b>{deck_uuid}</b></a><br><br>"
+        f"URL: <a href='https://sales-six-theta.vercel.app/{deck_uuid}'><b>https://sales-six-theta.vercel.app/{deck_uuid}</b></a><br><br>"
+        f"<hr><br><br>"
+        f"UUID: {deck_uuid}<br><br>"
         f"DECK:<br><pre>{deck_content_html}</pre>"
     )
 
