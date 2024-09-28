@@ -82,8 +82,14 @@ def generate_deck(input: dict):
     deck_uuid = str(uuid.uuid4())
     
     master = Path('prompts/master.txt').read_text() + f'\n\n{input}\n'
-    master_response = ai21(master)
-    deck_content = json.loads(master_response)
+    try:
+        master_response = ai21(master)
+        master_response = master_response.replace('```json', '').replace('```', '')
+        deck_content = json.loads(master_response)
+    except:
+        master_response = ai21(master)
+        master_response = master_response.replace('```json', '').replace('```', '')
+        deck_content = json.loads(master_response)
 
     image = Path('prompts/image.txt').read_text() + f'\n\n{deck_content}\n'
     image_response = ai21(image)
