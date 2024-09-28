@@ -66,11 +66,10 @@ async def generate_deck_form(request: Request):
 
 @app.get('/admin', response_class=HTMLResponse)
 async def admin_page():
-    decks = supabase.table('decks').select('uuid').execute()
-    deck_uuids = [deck['uuid'] for deck in decks.data]
-    deck_uuids_html = ''.join(f'<li><a href="https://.../{deck_uuid}">{deck_uuid}</a></li>' for deck_uuid in deck_uuids)
+    decks = supabase.table('decks').select('uuid, created_at').order('created_at', desc=True).execute()
+    deck_uuids_html = ''.join(f'<li>[{datetime.fromisoformat(deck["created_at"]).strftime("%Y-%m-%d %H:%M")}] <a href="https://.../{deck["uuid"]}"><code>{deck["uuid"]}</code></a></li>' for deck in decks.data)
     return HTMLResponse(
-        f"<html><body><h1>Admin Page</h1><h2>Decks UUIDs:</h2><ul>{deck_uuids_html}</ul></body></html>"
+        f"<html><body><h1>Admin Page</h1><h2>Decks UUIDs and Created At:</h2><ul>{deck_uuids_html}</ul></body></html>"
     )
 
 

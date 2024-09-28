@@ -46,6 +46,7 @@ Output in plain JSON format. Do not use Markdown or any other format.
     },
     {
       "type": "BENEFITS",
+      "title": "",
       "benefits": [
         {
           "name": "",
