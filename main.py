@@ -69,7 +69,7 @@ async def admin_page():
     decks = supabase.table('decks').select('uuid, created_at').order('created_at', desc=True).execute()
     deck_uuids_html = ''.join(f'<li>[{datetime.fromisoformat(deck["created_at"]).strftime("%Y-%m-%d %H:%M")}] <a href="https://.../{deck["uuid"]}"><code>{deck["uuid"]}</code></a></li>' for deck in decks.data)
     return HTMLResponse(
-        f"<html><body><h1>Admin Page</h1><h2>All Decks:</h2><ul>{deck_uuids_html}</ul></body></html>"
+        f'<html><body><h1>Admin Page</h1><h2>All Decks:</h2><ul>{deck_uuids_html}</ul><a href="/">← Back</a></body></html>'
     )
 
 
