@@ -64,6 +64,16 @@ async def generate_deck_form(request: Request):
     )
 
 
+@app.get('/admin', response_class=HTMLResponse)
+async def admin_page():
+    decks = supabase.table('decks').select('uuid').execute()
+    deck_uuids = [deck['uuid'] for deck in decks.data]
+    deck_uuids_html = ''.join(f'<li><a href="https://.../{deck_uuid}">{deck_uuid}</a></li>' for deck_uuid in deck_uuids)
+    return HTMLResponse(
+        "<html><body><h1>Admin Page</h1><h2>Decks UUIDs:</h2><ul>{deck_uuids_html}</ul></body></html>"
+    )
+
+
 def generate_deck(input: dict):
     deck_uuid = str(uuid.uuid4())
     
