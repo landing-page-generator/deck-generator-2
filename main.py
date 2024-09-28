@@ -1,3 +1,4 @@
+import requests
 import uvicorn
 import os
 import uuid
@@ -11,6 +12,8 @@ from pydantic import BaseModel, EmailStr
 from supabase import create_client, Client
 from pathlib import Path
 from dotenv import load_dotenv
+
+from img import get_image_from_pexels
 
 from ai import gemini, ai21
 
@@ -62,14 +65,22 @@ async def generate_deck_form(request: Request):
 
 
 def generate_deck(input: dict):
-    prompt = Path('prompts/master.txt').read_text() + f'\n{input}\n'
-    response = ai21(prompt)
-    deck_content = json.loads(response)
     deck_uuid = str(uuid.uuid4())
+    
+    master = Path('prompts/master.txt').read_text() + f'\n\n{input}\n'
+    master_response = ai21(master)
+    deck_content = json.loads(master_response)
+
+    image = Path('prompts/image.txt').read_text() + f'\n\n{deck_content}\n'
+    image_response = ai21(image)
+    image_url = get_image_from_pexels(image_response)
+    deck_content['list'][0]['imageURL'] = image_url
+
     supabase.table('decks').insert({
         "data": deck_content,
         "uuid": deck_uuid
     }).execute()
+
     return deck_uuid, deck_content
 
 
