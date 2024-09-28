@@ -5,6 +5,7 @@ You SHOULD follow the following template:
 
 {
     "logoURL": "https://via.placeholder.com/150",
+    "color": "pink",
     "list": [
         {
             "type": "HERO",
