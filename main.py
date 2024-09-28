@@ -59,7 +59,7 @@ async def generate_deck_form(request: Request):
     deck_content_html = json.dumps(deck_content, indent=4)
     return HTMLResponse(
         "Deck generated successfully!<br><br>"
-        f"UUID: <b>{deck_uuid}</b><br><br>"
+        f"UUID: <a href='https://sales-six-theta.vercel.app/{deck_uuid}'><b>{deck_uuid}</b></a><br><br>"
         f"DECK:<br><pre>{deck_content_html}</pre>"
     )
 
@@ -67,7 +67,7 @@ async def generate_deck_form(request: Request):
 @app.get('/admin', response_class=HTMLResponse)
 async def admin_page():
     decks = supabase.table('decks').select('uuid, created_at').order('created_at', desc=True).execute()
-    deck_uuids_html = ''.join(f'<li>[{datetime.fromisoformat(deck["created_at"]).strftime("%Y-%m-%d %H:%M")}] <a href="https://.../{deck["uuid"]}"><code>{deck["uuid"]}</code></a></li>' for deck in decks.data)
+    deck_uuids_html = ''.join(f'<li>[{datetime.fromisoformat(deck["created_at"]).strftime("%Y-%m-%d %H:%M")}] <a href="https://sales-six-theta.vercel.app/{deck["uuid"]}"><code>{deck["uuid"]}</code></a></li>' for deck in decks.data)
     return HTMLResponse(
         f'<html><body><h1>Admin Page</h1><h2>All Decks:</h2><ul>{deck_uuids_html}</ul><a href="/">← Back</a></body></html>'
     )
@@ -100,7 +100,12 @@ async def api_generate_deck(request: Request, input: dict):
         "data": input,
     }).execute()
     deck_uuid, deck_content = generate_deck(input)
-    return JSONResponse(content={"uuid": deck_uuid, "status": "success", "debug_data": deck_content})
+    return JSONResponse(content={
+        "uuid": deck_uuid,
+        "url": f'https://sales-six-theta.vercel.app/{deck_uuid}',
+        "status": "success",
+        "debug_data": deck_content
+    })
 
 if __name__ == '__main__':
     uvicorn.run('main:app', host='0.0.0.0', port=8000, reload=True)
