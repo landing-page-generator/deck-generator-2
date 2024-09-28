@@ -7,7 +7,7 @@ import json
 from datetime import datetime
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse
-from pydantic import BaseModel, EmailStr
+# from pydantic import BaseModel, EmailStr
 
 from supabase import create_client, Client
 from pathlib import Path
@@ -25,11 +25,6 @@ supabase_url: str = os.environ.get("SUPABASE_URL")
 supabase_key: str = os.environ.get("SUPABASE_KEY")
 supabase: Client = create_client(supabase_url, supabase_key)
 
-
-class InputData(BaseModel):
-    lead: dict
-    persona: dict
-    company: dict
 
 @app.get('/', response_class=HTMLResponse)
 async def read_index():
@@ -90,11 +85,11 @@ def generate_deck(input: dict):
 
 
 @app.post('/api/generate-decks', response_class=JSONResponse)
-async def api_generate_deck(request: Request, input: InputData):
+async def api_generate_deck(request: Request, input: dict):
     supabase.table('api-requests').insert({
-        "data": input.dict(),
+        "data": input,
     }).execute()
-    deck_uuid, deck_content = generate_deck(input.dict())
+    deck_uuid, deck_content = generate_deck(input)
     return JSONResponse(content={"uuid": deck_uuid, "status": "success", "debug_data": deck_content})
 
 if __name__ == '__main__':
