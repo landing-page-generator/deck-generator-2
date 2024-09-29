@@ -66,7 +66,7 @@ async def generate_deck_form(request: Request):
         f"<hr><br><br>"
         f"UUID: {deck_uuid}<br><br>"
         f"DECK:<br><pre>{deck_content_html}</pre>"
-        "<br><a href="/">← Back</a>"
+        '<a href="/">← Back</a>'
     )
 
 
