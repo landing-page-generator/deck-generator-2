@@ -43,7 +43,7 @@ async def read_index():
     <form action="/generate-deck" method="post">
         <label for="lead">Data: (you can put here whatever you want in any format)</label><br>
         <textarea id="data" name="data" rows="10" cols="100">{placeholder}</textarea><br>
-        <input type="submit" value="Generate Deck">
+        <input type="submit" value="Generate Deck" onclick="this.form.submit(); this.disabled=true;">
     </form>
     </body>
     </html>

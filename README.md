@@ -2,7 +2,7 @@
 
 Backend for AI deck generator
 
-Deployed at xxx
+Deployed as [Deck Generator](https://deck-generator.onrender.com/)
 
 Hacked on [Agents Hackathon @ MIT](https://app.agihouse.org/events/Agents-Hackathon-Powered-by-Jamba-20240928), Sep 28, 2024
 
@@ -33,4 +33,4 @@ uvicorn main:app --reload
 
 # Production deployment  
 
-Auto deployed to Vercel xxx at each commit to `main` branch.
+Auto deployed to Render [https://deck-generator.onrender.com](https://deck-generator.onrender.com/) at each commit to `main` branch.
