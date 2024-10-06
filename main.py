@@ -6,7 +6,9 @@ import json
 
 from datetime import datetime
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
+
+from pptx import Presentation
 
 # from pydantic import BaseModel, EmailStr
 
@@ -82,7 +84,7 @@ async def admin_page():
         .execute()
     )
     deck_uuids_html = "".join(
-        f'<li>[{datetime.fromisoformat(deck["created_at"]).strftime("%Y-%m-%d %H:%M")}] <a href="https://sales-six-theta.vercel.app/{deck["uuid"]}"><code>{deck["uuid"]}</code></a></li>'
+        f'<li>[{datetime.fromisoformat(deck["created_at"]).strftime("%Y-%m-%d %H:%M")}] <a href="https://sales-six-theta.vercel.app/{deck["uuid"]}">html</a>, <a href="https://deck-generator.onrender.com/pptx/{deck["uuid"]}">pptx</a></li>'
         for deck in decks.data
     )
     return HTMLResponse(
@@ -133,6 +135,42 @@ async def api_generate_deck(request: Request, input: dict):
             "status": "success",
             "debug_data": deck_content,
         }
+    )
+
+
+@app.get("/pptx/{uuid}")
+async def generate_pptx(uuid: str):
+    # Create a presentation object
+    prs = Presentation()
+
+    # Add a title slide layout
+    title_slide_layout = prs.slide_layouts[0]
+    slide = prs.slides.add_slide(title_slide_layout)
+    title = slide.shapes.title
+    subtitle = slide.placeholders[1]
+
+    # Set title and subtitle text
+    title.text = "Hello, World!"
+    subtitle.text = "This is an auto-generated PowerPoint slide."
+
+    # Add a second slide with bullet points
+    bullet_slide_layout = prs.slide_layouts[1]
+    slide = prs.slides.add_slide(bullet_slide_layout)
+    title = slide.shapes.title
+    content = slide.placeholders[1]
+
+    title.text = "Agenda"
+    content.text = "This slide contains bullet points."
+
+    # Save the presentation to a file
+    pptx_filename = f"{uuid}.pptx"
+    prs.save(pptx_filename)
+
+    # Return the file as a downloadable response
+    return FileResponse(
+        pptx_filename,
+        media_type="application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        filename=pptx_filename,
     )
 
 
