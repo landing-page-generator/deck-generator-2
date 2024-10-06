@@ -7,7 +7,7 @@ from datetime import datetime
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 
-from pptx_generator_v3 import create_pptx_from_json
+from pptx_generator_v2 import create_pptx_from_json
 
 from supabase import create_client, Client
 from pathlib import Path
