@@ -1,4 +1,3 @@
-import requests
 import uvicorn
 import os
 import uuid
@@ -8,9 +7,7 @@ from datetime import datetime
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 
-from pptx import Presentation
-
-# from pydantic import BaseModel, EmailStr
+from pptx_generator import generate_pptx_from_json
 
 from supabase import create_client, Client
 from pathlib import Path
@@ -110,8 +107,9 @@ def generate_deck(input: dict):
     image_url = get_image_from_pexels(image_response)
     deck_content["list"][0]["imageURL"] = image_url
 
-    pptx = Path("prompts/pptx.txt").read_text() + f"\n\n{deck_content}\n"
-    pptx_response = gemini(pptx)
+    # pptx = Path("prompts/pptx.txt").read_text() + f"\n\n{deck_content}\n"
+    # pptx_response = gemini(pptx)
+    pptx_response = None
 
     supabase.table("decks").insert(
         {"data": deck_content, "input": input, "uuid": deck_uuid, "pptx": pptx_response}
@@ -141,30 +139,10 @@ async def api_generate_deck(request: Request, input: dict):
 @app.get("/pptx/{uuid}")
 async def generate_pptx(uuid: str):
     # Create a presentation object
-    prs = Presentation()
 
-    # Add a title slide layout
-    title_slide_layout = prs.slide_layouts[0]
-    slide = prs.slides.add_slide(title_slide_layout)
-    title = slide.shapes.title
-    subtitle = slide.placeholders[1]
+    data = supabase.table("decks").select("data").eq("uuid", uuid).execute()
 
-    # Set title and subtitle text
-    title.text = "Hello, World!"
-    subtitle.text = "This is an auto-generated PowerPoint slide."
-
-    # Add a second slide with bullet points
-    bullet_slide_layout = prs.slide_layouts[1]
-    slide = prs.slides.add_slide(bullet_slide_layout)
-    title = slide.shapes.title
-    content = slide.placeholders[1]
-
-    title.text = "Agenda"
-    content.text = "This slide contains bullet points."
-
-    # Save the presentation to a file
-    pptx_filename = f"{uuid}.pptx"
-    prs.save(pptx_filename)
+    pptx_filename = generate_pptx_from_json(data)
 
     # Return the file as a downloadable response
     return FileResponse(
