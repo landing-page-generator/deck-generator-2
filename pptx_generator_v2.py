@@ -315,6 +315,6 @@ def create_pptx_from_json(data, uuid=None):
                 p.alignment = PP_ALIGN.CENTER
 
     # Save the presentation to a file
-    output_filename = f"{uuid}.pptx"
+    output_filename = f"decks/{uuid}.pptx"
     prs.save(output_filename)
     return output_filename

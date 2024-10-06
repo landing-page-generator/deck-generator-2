@@ -81,7 +81,7 @@ async def admin_page():
         .execute()
     )
     deck_uuids_html = "".join(
-        f'<li>[{datetime.fromisoformat(deck["created_at"]).strftime("%Y-%m-%d %H:%M")}] <a href="https://sales-six-theta.vercel.app/{deck["uuid"]}">html</a>, <a href="https://deck-generator.onrender.com/pptx/{deck["uuid"]}">pptx</a></li>'
+        f'<li>[{datetime.fromisoformat(deck["created_at"]).strftime("%Y-%m-%d %H:%M")}] <a href="https://sales-six-theta.vercel.app/{deck["uuid"]}">html</a>, <a href="/pptx/{deck["uuid"]}">pptx</a></li>'
         for deck in decks.data
     )
     return HTMLResponse(
@@ -141,16 +141,16 @@ async def generate_pptx(uuid: str):
     # Create a presentation object
 
     data = supabase.table("decks").select("data").eq("uuid", uuid).execute()
-    print(data)
     data = data.data[0]["data"]
 
     pptx_filename = create_pptx_from_json(data, uuid)
+    download_filename = f"deck-{uuid}.pptx"
 
     # Return the file as a downloadable response
     return FileResponse(
         pptx_filename,
         media_type="application/vnd.openxmlformats-officedocument.presentationml.presentation",
-        filename=pptx_filename,
+        filename=download_filename,
     )
 
 
