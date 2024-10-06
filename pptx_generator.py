@@ -63,7 +63,7 @@ def add_cta_slide(prs, headline, description, link, homepageLink):
     p.text = f"Call to Action: {link}"
 
 
-def create_pptx_from_json(data):
+def create_pptx_from_json(data, uuid=None):
     # Initialize presentation
     prs = Presentation()
 
@@ -112,6 +112,6 @@ def create_pptx_from_json(data):
             )
 
     # Save the presentation to a file
-    output_filename = "presentation.pptx"
+    output_filename = f"{uuid}.pptx"
     prs.save(output_filename)
     return output_filename

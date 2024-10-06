@@ -7,7 +7,7 @@ from datetime import datetime
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
 
-from pptx_generator import generate_pptx_from_json
+from pptx_generator_v2 import create_pptx_from_json
 
 from supabase import create_client, Client
 from pathlib import Path
@@ -142,7 +142,7 @@ async def generate_pptx(uuid: str):
 
     data = supabase.table("decks").select("data").eq("uuid", uuid).execute()
 
-    pptx_filename = generate_pptx_from_json(data)
+    pptx_filename = create_pptx_from_json(data, uuid)
 
     # Return the file as a downloadable response
     return FileResponse(
