@@ -65,7 +65,7 @@ async def generate_deck_form(request: Request):
     return HTMLResponse(
         '<a href="/">← Back</a><br><br>'
         "Deck generated successfully!<br><br>"
-        f"Web URL: <a href='https://sales-six-theta.vercel.app/{deck_uuid}'><b>https://sales-six-theta.vercel.app/{deck_uuid}</b></a><br><br>"
+        f"Web URL: <a href='https://deck-visualizer.onrender.com/{deck_uuid}'><b>https://deck-visualizer.onrender.com/{deck_uuid}</b></a><br><br>"
         f"PPTX: <a href='/pptx/{deck_uuid}'>Download PPTX</a><br><br>"
         f"<hr><br><br>"
         f"UUID: {deck_uuid}<br><br>"
@@ -83,7 +83,7 @@ async def admin_page():
         .execute()
     )
     deck_uuids_html = "".join(
-        f'<li>[{datetime.fromisoformat(deck["created_at"]).strftime("%Y-%m-%d %H:%M")}] <a href="https://sales-six-theta.vercel.app/{deck["uuid"]}">html</a>, <a href="/pptx/{deck["uuid"]}">pptx</a></li>'
+        f'<li>[{datetime.fromisoformat(deck["created_at"]).strftime("%Y-%m-%d %H:%M")}] <a href="https://deck-visualizer.onrender.com/{deck["uuid"]}">html</a>, <a href="/pptx/{deck["uuid"]}">pptx</a></li>'
         for deck in decks.data
     )
     return HTMLResponse(
@@ -131,7 +131,7 @@ async def api_generate_deck(request: Request, input: dict):
     return JSONResponse(
         content={
             "uuid": deck_uuid,
-            "url": f"https://sales-six-theta.vercel.app/{deck_uuid}",
+            "url": f"https://deck-visualizer.onrender.com/{deck_uuid}",
             "status": "success",
             "debug_data": deck_content,
         }
