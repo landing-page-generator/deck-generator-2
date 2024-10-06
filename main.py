@@ -141,6 +141,8 @@ async def generate_pptx(uuid: str):
     # Create a presentation object
 
     data = supabase.table("decks").select("data").eq("uuid", uuid).execute()
+    print(data)
+    data = data.data[0]["data"]
 
     pptx_filename = create_pptx_from_json(data, uuid)
 
