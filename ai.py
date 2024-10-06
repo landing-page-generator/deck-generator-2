@@ -7,22 +7,20 @@ from dotenv import load_dotenv
 from ai21 import AI21Client
 from ai21.models.chat import ChatMessage
 
-_ = load_dotenv(Path(__file__).parent / '.env')
+_ = load_dotenv(Path(__file__).parent / ".env")
 
 
 def gemini(prompt):
-    api_key = os.environ['GEMINI_API_KEY']
-    model = os.environ.get('GEMINI_MODEL', 'gemini-1.5-flash')
-    api_endpoint = f'https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}'
+    api_key = os.environ["GEMINI_API_KEY"]
+    model = os.environ.get("GEMINI_MODEL", "gemini-1.5-flash")
+    api_endpoint = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
 
     headers = {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
     }
 
     payload = {
-        "contents": [{
-            "parts": [{"text": prompt}]
-        }],
+        "contents": [{"parts": [{"text": prompt}]}],
     }
 
     # Making the POST request
@@ -32,7 +30,7 @@ def gemini(prompt):
 
         # Handle the response
         response_data = response.json()
-        return response_data['candidates'][0]['content']['parts'][0]['text']
+        return response_data["candidates"][0]["content"]["parts"][0]["text"]
 
     except requests.exceptions.RequestException as e:
         print("An error occurred:", e)
@@ -40,8 +38,8 @@ def gemini(prompt):
 
 
 def ai21(prompt):
-    api_key = os.environ['AI21_API_KEY']
-    model = os.environ.get('AI21_MODEL', 'jamba-1.5-mini')
+    api_key = os.environ["AI21_API_KEY"]
+    model = os.environ.get("AI21_MODEL", "jamba-1.5-mini")
     ai21_client = AI21Client(api_key)
 
     # system = "You're a sales manager in a SaaS company"
