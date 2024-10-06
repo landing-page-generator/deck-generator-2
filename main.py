@@ -64,7 +64,8 @@ async def generate_deck_form(request: Request):
     deck_content_html = json.dumps(deck_content, indent=4)
     return HTMLResponse(
         "Deck generated successfully!<br><br>"
-        f"URL: <a href='https://sales-six-theta.vercel.app/{deck_uuid}'><b>https://sales-six-theta.vercel.app/{deck_uuid}</b></a><br><br>"
+        f"Web URL: <a href='https://sales-six-theta.vercel.app/{deck_uuid}'><b>https://sales-six-theta.vercel.app/{deck_uuid}</b></a><br><br>"
+        f"PPTX: <a href='/pptx/{deck_uuid}'>Download PPTX</a><br><br>"
         f"<hr><br><br>"
         f"UUID: {deck_uuid}<br><br>"
         f"DECK:<br><pre>{deck_content_html}</pre>"
