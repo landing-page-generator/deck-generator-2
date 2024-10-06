@@ -7,6 +7,7 @@ import json
 from datetime import datetime
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse, JSONResponse
+
 # from pydantic import BaseModel, EmailStr
 
 from supabase import create_client, Client
@@ -19,14 +20,14 @@ from ai import gemini, ai21
 
 app = FastAPI()
 
-_ = load_dotenv(Path(__file__).parent / '.env')
+_ = load_dotenv(Path(__file__).parent / ".env")
 
 supabase_url: str = os.environ.get("SUPABASE_URL")
 supabase_key: str = os.environ.get("SUPABASE_KEY")
 supabase: Client = create_client(supabase_url, supabase_key)
 
 
-@app.get('/', response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse)
 async def read_index():
     # return HTMLResponse("Hello, world!")
     placeholder = """
@@ -36,7 +37,8 @@ async def read_index():
     "company": { "name": "Sundai" }
 }"""
 
-    return HTMLResponse(f"""
+    return HTMLResponse(
+        f"""
     <html>
     <body>
     <h1>Deck Generation Form</h1>
@@ -47,13 +49,14 @@ async def read_index():
     </form>
     </body>
     </html>
-    """)
+    """
+    )
 
 
-@app.post('/generate-deck', response_class=HTMLResponse)
+@app.post("/generate-deck", response_class=HTMLResponse)
 async def generate_deck_form(request: Request):
     form_data = await request.form()
-    data = form_data.get('data')
+    data = form_data.get("data")
     try:
         data = json.loads(data)
     except:
@@ -70,10 +73,18 @@ async def generate_deck_form(request: Request):
     )
 
 
-@app.get('/admin', response_class=HTMLResponse)
+@app.get("/admin", response_class=HTMLResponse)
 async def admin_page():
-    decks = supabase.table('decks').select('uuid, created_at').order('created_at', desc=True).execute()
-    deck_uuids_html = ''.join(f'<li>[{datetime.fromisoformat(deck["created_at"]).strftime("%Y-%m-%d %H:%M")}] <a href="https://sales-six-theta.vercel.app/{deck["uuid"]}"><code>{deck["uuid"]}</code></a></li>' for deck in decks.data)
+    decks = (
+        supabase.table("decks")
+        .select("uuid, created_at")
+        .order("created_at", desc=True)
+        .execute()
+    )
+    deck_uuids_html = "".join(
+        f'<li>[{datetime.fromisoformat(deck["created_at"]).strftime("%Y-%m-%d %H:%M")}] <a href="https://sales-six-theta.vercel.app/{deck["uuid"]}"><code>{deck["uuid"]}</code></a></li>'
+        for deck in decks.data
+    )
     return HTMLResponse(
         f'<html><body><h1>Admin Page</h1><h2>All Decks:</h2><ul>{deck_uuids_html}</ul><a href="/">← Back</a></body></html>'
     )
@@ -81,43 +92,49 @@ async def admin_page():
 
 def generate_deck(input: dict):
     deck_uuid = str(uuid.uuid4())
-    
-    master = Path('prompts/master.txt').read_text() + f'\n\n{input}\n'
+
+    master = Path("prompts/master.txt").read_text() + f"\n\n{input}\n"
     try:
         master_response = ai21(master)
-        master_response = master_response.replace('```json', '').replace('```', '')
+        master_response = master_response.replace("```json", "").replace("```", "")
         deck_content = json.loads(master_response)
     except:
         master_response = ai21(master)
-        master_response = master_response.replace('```json', '').replace('```', '')
+        master_response = master_response.replace("```json", "").replace("```", "")
         deck_content = json.loads(master_response)
 
-    image = Path('prompts/image.txt').read_text() + f'\n\n{deck_content}\n'
+    image = Path("prompts/image.txt").read_text() + f"\n\n{deck_content}\n"
     image_response = ai21(image)
     image_url = get_image_from_pexels(image_response)
-    deck_content['list'][0]['imageURL'] = image_url
+    deck_content["list"][0]["imageURL"] = image_url
 
-    supabase.table('decks').insert({
-        "data": deck_content,
-        "input": input,
-        "uuid": deck_uuid
-    }).execute()
+    pptx = Path("prompts/pptx.txt").read_text() + f"\n\n{deck_content}\n"
+    pptx_response = ai21(pptx)
+
+    supabase.table("decks").insert(
+        {"data": deck_content, "input": input, "uuid": deck_uuid, "pptx": pptx_response}
+    ).execute()
 
     return deck_uuid, deck_content
 
 
-@app.post('/api/generate-decks', response_class=JSONResponse)
+@app.post("/api/generate-decks", response_class=JSONResponse)
 async def api_generate_deck(request: Request, input: dict):
-    supabase.table('api-requests').insert({
-        "data": input,
-    }).execute()
+    supabase.table("api-requests").insert(
+        {
+            "data": input,
+        }
+    ).execute()
     deck_uuid, deck_content = generate_deck(input)
-    return JSONResponse(content={
-        "uuid": deck_uuid,
-        "url": f'https://sales-six-theta.vercel.app/{deck_uuid}',
-        "status": "success",
-        "debug_data": deck_content
-    })
+    return JSONResponse(
+        content={
+            "uuid": deck_uuid,
+            "url": f"https://sales-six-theta.vercel.app/{deck_uuid}",
+            "status": "success",
+            "debug_data": deck_content,
+        }
+    )
 
-if __name__ == '__main__':
-    uvicorn.run('main:app', host='0.0.0.0', port=8000, reload=True)
+
+if __name__ == "__main__":
+    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
