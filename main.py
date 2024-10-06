@@ -95,21 +95,21 @@ def generate_deck(input: dict):
 
     master = Path("prompts/master.txt").read_text() + f"\n\n{input}\n"
     try:
-        master_response = ai21(master)
+        master_response = gemini(master)
         master_response = master_response.replace("```json", "").replace("```", "")
         deck_content = json.loads(master_response)
     except:
-        master_response = ai21(master)
+        master_response = gemini(master)
         master_response = master_response.replace("```json", "").replace("```", "")
         deck_content = json.loads(master_response)
 
     image = Path("prompts/image.txt").read_text() + f"\n\n{deck_content}\n"
-    image_response = ai21(image)
+    image_response = gemini(image)
     image_url = get_image_from_pexels(image_response)
     deck_content["list"][0]["imageURL"] = image_url
 
     pptx = Path("prompts/pptx.txt").read_text() + f"\n\n{deck_content}\n"
-    pptx_response = ai21(pptx)
+    pptx_response = gemini(pptx)
 
     supabase.table("decks").insert(
         {"data": deck_content, "input": input, "uuid": deck_uuid, "pptx": pptx_response}
