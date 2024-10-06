@@ -16,7 +16,7 @@ def hex_to_rgb(hex_color):
     )
 
 
-def create_presentation(data, uuid=None):
+def create_pptx_from_json(data, uuid=None):
     prs = Presentation()
 
     # Define a consistent theme color
