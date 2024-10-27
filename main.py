@@ -5,7 +5,12 @@ import json
 
 from datetime import datetime
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse, JSONResponse, FileResponse
+from fastapi.responses import (
+    HTMLResponse,
+    JSONResponse,
+    FileResponse,
+    StreamingResponse,
+)
 
 from pptx_generator_v2 import create_pptx_from_json
 
@@ -15,7 +20,7 @@ from dotenv import load_dotenv
 
 from img import get_image_from_pexels
 
-from ai import gemini, ai21
+from ai import gemini
 
 app = FastAPI()
 
@@ -29,12 +34,9 @@ supabase: Client = create_client(supabase_url, supabase_key)
 @app.get("/", response_class=HTMLResponse)
 async def read_index():
     # return HTMLResponse("Hello, world!")
-    placeholder = """
-{
-    "lead": { "name": "John Smith", "email": "john.smith@gmail.com"},
-    "persona": { "name": "Firefighter" },
-    "company": { "name": "Sundai" }
-}"""
+    placeholder = """COMPANY: Acme Inc.
+PRODUCT: Firefighter Suit
+LEAD: John Smith"""
 
     return HTMLResponse(
         f"""
@@ -58,18 +60,19 @@ async def generate_deck_form(request: Request):
     data = form_data.get("data")
     try:
         data = json.loads(data)
-    except:
+    except Exception as _:
         data = data
     deck_uuid, deck_content = generate_deck(data)
     deck_content_html = json.dumps(deck_content, indent=4)
     return HTMLResponse(
         '<a href="/">← Back</a><br><br>'
-        "Deck generated successfully!<br><br>"
-        f"Web URL: <a href='https://deck-visualizer.onrender.com/{deck_uuid}'><b>https://deck-visualizer.onrender.com/{deck_uuid}</b></a><br><br>"
-        f"PPTX: <a href='/pptx/{deck_uuid}'>Download PPTX</a><br><br>"
-        f"<hr><br><br>"
-        f"UUID: {deck_uuid}<br><br>"
-        f"DECK:<br><pre>{deck_content_html}</pre>"
+        f"Deck generated successfully!<br>"
+        f"<a href='/pptx/{deck_uuid}.pptx'>Download PPTX</a>"
+        f"<hr>"
+        f"DECK {deck_uuid}:<br><pre><code class='language-json'>{deck_content_html}</code></pre>"
+        '<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/styles/default.min.css">'
+        '<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>'
+        "<script>hljs.highlightAll();</script>"
         '<a href="/">← Back</a><br><br>'
     )
 
@@ -77,32 +80,25 @@ async def generate_deck_form(request: Request):
 @app.get("/admin", response_class=HTMLResponse)
 async def admin_page():
     decks = (
-        supabase.table("decks")
+        supabase.table("decks2")
         .select("uuid, created_at")
         .order("created_at", desc=True)
         .execute()
     )
     deck_uuids_html = "".join(
-        f'<li>[{datetime.fromisoformat(deck["created_at"]).strftime("%Y-%m-%d %H:%M")}] <a href="https://deck-visualizer.onrender.com/{deck["uuid"]}">html</a>, <a href="/pptx/{deck["uuid"]}">pptx</a></li>'
+        f'<li>[{datetime.fromisoformat(deck["created_at"]).strftime("%Y-%m-%d %H:%M")}] <a href="/pptx/{deck["uuid"]}.pptx">PPTX</a></li>'
         for deck in decks.data
     )
     return HTMLResponse(
-        f'<html><body><a href="/">← Back</a><br><br><h1>Admin Page</h1><h2>All Decks:</h2><ul>{deck_uuids_html}</ul><a href="/">← Back</a></body></html>'
+        f'<html><body><a href="/">← Back</a><br><br><h1>Admin Page: All Decks</h1><ul>{deck_uuids_html}</ul><a href="/">← Back</a></body></html>'
     )
 
 
 def generate_deck(input: dict):
-    deck_uuid = str(uuid.uuid4())
-
     master = Path("prompts/master.txt").read_text() + f"\n\n{input}\n"
-    try:
-        master_response = gemini(master)
-        master_response = master_response.replace("```json", "").replace("```", "")
-        deck_content = json.loads(master_response)
-    except:
-        master_response = gemini(master)
-        master_response = master_response.replace("```json", "").replace("```", "")
-        deck_content = json.loads(master_response)
+    master_response = gemini(master)
+    master_response = master_response.replace("```json", "").replace("```", "")
+    deck_content = json.loads(master_response)
 
     image = Path("prompts/image.txt").read_text() + f"\n\n{deck_content}\n"
     image_response = gemini(image)
@@ -111,49 +107,48 @@ def generate_deck(input: dict):
 
     # pptx = Path("prompts/pptx.txt").read_text() + f"\n\n{deck_content}\n"
     # pptx_response = gemini(pptx)
-    pptx_response = None
+    deck_uuid = str(uuid.uuid4())
+    pptx_filename = create_pptx_from_json(deck_content, deck_uuid)
+    # download_filename = f"deck-{uuid}.pptx"
 
-    supabase.table("decks").insert(
-        {"data": deck_content, "input": input, "uuid": deck_uuid, "pptx": pptx_response}
+    # Save the PPTX to Supabase bucket
+    with open(pptx_filename, "rb") as file:
+        pptx_content = file.read()
+
+    pptx_filename = pptx_filename.split("/")[-1]
+    supabase.storage.from_("decks2").upload(pptx_filename, pptx_content)
+
+    supabase.table("decks2").insert(
+        {
+            "json_content": deck_content,
+            "input": input,
+            "uuid": deck_uuid,
+            "pptx_filename": pptx_filename,
+        }
     ).execute()
 
     return deck_uuid, deck_content
 
 
-@app.post("/api/generate-decks", response_class=JSONResponse)
-async def api_generate_deck(request: Request, input: dict):
-    supabase.table("api-requests").insert(
-        {
-            "data": input,
-        }
-    ).execute()
-    deck_uuid, deck_content = generate_deck(input)
-    return JSONResponse(
-        content={
-            "uuid": deck_uuid,
-            "url": f"https://deck-visualizer.onrender.com/{deck_uuid}",
-            "status": "success",
-            "debug_data": deck_content,
-        }
-    )
-
-
-@app.get("/pptx/{uuid}")
+@app.get("/pptx/{uuid}.pptx")
 async def generate_pptx(uuid: str):
-    # Create a presentation object
+    data = supabase.table("decks2").select("pptx_filename").eq("uuid", uuid).execute()
+    print(data)
 
-    data = supabase.table("decks").select("data").eq("uuid", uuid).execute()
-    data = data.data[0]["data"]
+    if data:
+        pptx_filename = data.data[0]["pptx_filename"]
+        pptx_content = supabase.storage.from_("decks2").download(pptx_filename)
+        pptx_filename_local = f"decks/{pptx_filename}"
+        with open(pptx_filename_local, "wb") as file:
+            file.write(pptx_content)
 
-    pptx_filename = create_pptx_from_json(data, uuid)
-    download_filename = f"deck-{uuid}.pptx"
-
-    # Return the file as a downloadable response
-    return FileResponse(
-        pptx_filename,
-        media_type="application/vnd.openxmlformats-officedocument.presentationml.presentation",
-        filename=download_filename,
-    )
+        return FileResponse(
+            pptx_filename_local,
+            media_type="application/vnd.openxmlformats-officedocument.presentationml.presentation",
+            filename=pptx_filename,
+        )
+    else:
+        return {"error": "PPTX file not found"}
 
 
 if __name__ == "__main__":

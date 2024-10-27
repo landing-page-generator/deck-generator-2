@@ -10,5 +10,4 @@ uvicorn
 supabase
 pydantic[email]
 python-multipart
-ai21
 python-pptx

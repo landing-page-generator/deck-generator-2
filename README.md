@@ -12,8 +12,8 @@ Hacked on [Agents Hackathon @ MIT](https://app.agihouse.org/events/Agents-Hackat
 cp .env.example .env
 nano .env
 # then add your GitHub and Gemini secret keys to the .env file
-virtualenv venv
-source venv/bin/activate
+virtualenv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
@@ -29,6 +29,11 @@ or
 
 ```bash
 uvicorn main:app --reload
+```
+
+or 
+```bash
+uvicorn main:app --host 0.0.0.0 --port 80 --workers 4
 ```
 
 # Production deployment  
